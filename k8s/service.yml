@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chess-backend-service
+  namespace: chess-backend-stateless
+  labels:
+    component: backend-service
+spec:
+  type: ClusterIP
+  selector:
+    component: backend-pod
+  ports:
+    - protocol: TCP
+      port: 80         
+      targetPort: 8080 
+      

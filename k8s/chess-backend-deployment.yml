@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: chess-backend-deploy
+  namespace: chess-backend-stateless
+  labels:
+    component: backend-deployment
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: backend-pod
+      
+  template:
+    metadata:
+      labels:
+        component: backend-pod
+    spec:
+      containers:
+      - name: chess-backend-container
+        image: vishalbhatsoori/chess-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        
