@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chess-worker-deploy
+  namespace: chess-backend-stateless
+  labels:
+    component: worker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: worker-pod
+  template:
+    metadata:
+      labels:
+        component: worker-pod
+    spec:
+      containers:
+      - name: chess-worker-container
+        image: vishalbhatsoori/chess-worker:latest 
+        imagePullPolicy: Always
+        env:
+        - name: KAFKA_BROKER
+          # Cross-namespace DNS routing to the headless Kafka service
+          value: "kafka-0.kafka-headless.data.svc.cluster.local:9092"
+        - name: MONGO_URI
+          valueFrom:
+            secretKeyRef:
+              name: chess-secrets
+              key: MONGO_URI

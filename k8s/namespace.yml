@@ -4,3 +4,10 @@ metadata:
   name: chess-backend-stateless
   labels:
     name: chess-backend-stateless
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: data
+  labels:
+    name: data

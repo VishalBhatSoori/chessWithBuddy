@@ -1,0 +1,8 @@
+services:
+  db-worker:
+    image: vishalbhatsoori/db-worker:latest
+    container_name: db-worker-instance
+    env_file:
+      - .env
+    restart: always
+    pull_policy: always
