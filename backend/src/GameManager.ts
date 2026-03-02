@@ -17,7 +17,6 @@ export class GameManager {
         this.users.push(socket);
         this.handleMessage(socket)
     }
-
     removeUser(socket: WebSocket) {
         this.users = this.users.filter(user => user !== socket);
 
@@ -29,13 +28,23 @@ export class GameManager {
         if (game) {
             // Notify the other player that the game is over due to abandonment
             const opponent = game.getPlayer1() === socket ? game.getPlayer2() : game.getPlayer1();
+            const winner = game.getPlayer1() === socket ? "black" : "white";
+
             opponent.send(JSON.stringify({
                 type: "GAME_OVER",
                 payload: {
-                    winner: game.getPlayer1() === socket ? "black" : "white",
+                    winner,
                     reason: "opponent_disconnected"
                 }
             }));
+
+            // Publish game abandonment to Kafka
+            import('./kafka.js').then(({ producer }) => {
+                producer.send({
+                    topic: 'chess-moves',
+                    messages: [{ value: JSON.stringify({ type: 'GAME_OVER', gameId: game.id, status: 'ABANDONED', winner, timestamp: new Date().toISOString() }) }]
+                }).catch(console.error);
+            });
 
             // Remove game from active games
             this.games = this.games.filter(g => g !== game);

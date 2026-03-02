@@ -30,13 +30,33 @@ async function initKafkaConsumer() {
         eachMessage: async ({ topic, partition, message }) => {
             if (!message.value) return;
             try {
-                const moveData = JSON.parse(message.value.toString());
-                const { gameId, move, fen, timestamp } = moveData;
+                const data = JSON.parse(message.value.toString());
+
+                if (data.type === 'GAME_OVER') {
+                    // Update the game status
+                    await GameModel.updateOne(
+                        { gameId: data.gameId },
+                        {
+                            $set: { status: data.status },
+                            $setOnInsert: { gameId: data.gameId, createdAt: data.timestamp || new Date() }
+                        },
+                        { upsert: true }
+                    );
+                    console.log(`Game ${data.gameId} marked as ${data.status}`);
+                    return;
+                }
+
+                const { gameId, move, fen, timestamp } = data;
+
+                if (!gameId || !move || !fen) {
+                    console.warn("Ignoring invalid or incomplete message:", data);
+                    return;
+                }
 
                 // Make sure the Game exists
                 await GameModel.updateOne(
                     { gameId },
-                    { $setOnInsert: { gameId, createdAt: timestamp } },
+                    { $setOnInsert: { gameId, createdAt: timestamp || new Date() } },
                     { upsert: true }
                 );
 

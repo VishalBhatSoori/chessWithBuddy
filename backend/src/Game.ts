@@ -49,6 +49,7 @@ export class Game {
 
             // Publish to Kafka asynchronously
             const movePayload = {
+                type: 'MOVE',
                 gameId: this.id,
                 move: playermove,
                 fen: this.board.fen(),
@@ -66,10 +67,18 @@ export class Game {
 
         // Check for game over
         if (this.board.isGameOver()) {
+            const winner = this.board.turn() === "w" ? "black" : "white";
+
+            // Publish game over to Kafka
+            producer.send({
+                topic: 'chess-moves',
+                messages: [{ value: JSON.stringify({ type: 'GAME_OVER', gameId: this.id, status: 'COMPLETED', winner, timestamp: new Date().toISOString() }) }]
+            }).catch(console.error);
+
             this.player1.send(JSON.stringify({
                 type: GAME_OVER,
                 payload: {
-                    winner: this.board.turn() === "w" ? "black" : "white"
+                    winner
                 }
             }));
             this.player2.send(JSON.stringify({
