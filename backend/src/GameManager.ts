@@ -20,6 +20,26 @@ export class GameManager {
 
     removeUser(socket: WebSocket) {
         this.users = this.users.filter(user => user !== socket);
+
+        if (this.waitingUser === socket) {
+            this.waitingUser = null;
+        }
+
+        const game = this.games.find(g => g.getPlayer1() === socket || g.getPlayer2() === socket);
+        if (game) {
+            // Notify the other player that the game is over due to abandonment
+            const opponent = game.getPlayer1() === socket ? game.getPlayer2() : game.getPlayer1();
+            opponent.send(JSON.stringify({
+                type: "GAME_OVER",
+                payload: {
+                    winner: game.getPlayer1() === socket ? "black" : "white",
+                    reason: "opponent_disconnected"
+                }
+            }));
+
+            // Remove game from active games
+            this.games = this.games.filter(g => g !== game);
+        }
     }
 
     private handleMessage(socket: WebSocket) {
