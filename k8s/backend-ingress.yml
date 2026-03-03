@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - ec2-65-0-75-103.ap-south-1.compute.amazonaws.com
+    - 65.0.75.103.nip.io
     secretName: chess-tls-secret
   rules:
-  - host: "ec2-65-0-75-103.ap-south-1.compute.amazonaws.com"
+  - host: "65.0.75.103.nip.io"
     http:
       paths:
       - path: /
