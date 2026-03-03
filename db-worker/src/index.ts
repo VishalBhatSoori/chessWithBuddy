@@ -76,4 +76,7 @@ async function initKafkaConsumer() {
     });
 }
 
-initKafkaConsumer().catch(console.error);
+initKafkaConsumer().catch((err) => {
+    console.error("Fatal exception during Kafka init. Exiting process...", err);
+    process.exit(1);
+});
