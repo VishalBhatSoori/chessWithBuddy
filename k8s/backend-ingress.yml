@@ -5,7 +5,12 @@ metadata:
   namespace: chess-backend-stateless
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  tls:
+  - hosts:
+    - ec2-65-0-75-103.ap-south-1.compute.amazonaws.com
+    secretName: chess-tls-secret
   rules:
   - host: "ec2-65-0-75-103.ap-south-1.compute.amazonaws.com"
     http:

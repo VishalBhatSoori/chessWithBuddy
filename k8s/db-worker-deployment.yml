@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: chess-worker-container
-        image: vishalbhatsoori/chess-worker:latest 
+        image: vishalbhatsoori/db-worker:latest 
         imagePullPolicy: Always
         env:
         - name: KAFKA_BROKER
