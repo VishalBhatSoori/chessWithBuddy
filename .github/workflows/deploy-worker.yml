@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'db-worker/**'
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch:
 
 jobs:
   build-and-push:
