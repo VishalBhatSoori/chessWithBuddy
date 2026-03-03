@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: kafka
-        image: apache/kafka:latest
+        image: vishalbhatsoori/kafka:latest
         env:
         - name: KAFKA_NODE_ID
           valueFrom:
