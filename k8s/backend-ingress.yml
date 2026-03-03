@@ -7,7 +7,8 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - http:
+  - host: "ec2-43-204-23-191.ap-south-1.compute.amazonaws.com"
+    http:
       paths:
       - path: /
         pathType: Prefix
