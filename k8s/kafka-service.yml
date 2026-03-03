@@ -11,6 +11,6 @@ spec:
     name: client
   - port: 9093
     name: controller
-  clusterIP: None  
+  clusterIP: None
   selector:
     app: kafka

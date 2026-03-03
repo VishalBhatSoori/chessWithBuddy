@@ -5,7 +5,7 @@ metadata:
   namespace: data
 spec:
   serviceName: "kafka-headless"
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: kafka
@@ -17,12 +17,16 @@ spec:
       containers:
       - name: kafka
         image: bitnami/kafka:latest
-        ports:
-        - containerPort: 9092
-        - containerPort: 9093
+        command:
+          - bash
+          - -ec
+          - |
+            # Extract the index from the hostname (e.g., kafka-0 -> 0)
+            HOSTNAME=$(hostname)
+            export KAFKA_CFG_NODE_ID="${HOSTNAME##*-}"
+            # Start Kafka
+            /opt/bitnami/scripts/kafka/entrypoint.sh /opt/bitnami/scripts/kafka/run.sh
         env:
-        - name: KAFKA_CFG_NODE_ID
-          value: "0"
         - name: KAFKA_CFG_PROCESS_ROLES
           value: "controller,broker"
         - name: KAFKA_CFG_LISTENERS
@@ -30,14 +34,18 @@ spec:
         - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
           value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
         - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-          value: "0@kafka-0.kafka-headless.data.svc.cluster.local:9093"
+          value: "0@kafka-0.kafka-headless.data.svc.cluster.local:9093,1@kafka-1.kafka-headless.data.svc.cluster.local:9093,2@kafka-2.kafka-headless.data.svc.cluster.local:9093"
         - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
           value: "CONTROLLER"
-        # Mount the volume
         volumeMounts:
         - name: kafka-storage
           mountPath: /bitnami/kafka
-      volumes:
-      - name: kafka-storage
-        persistentVolumeClaim:
-          claimName: kafka-data-pvc
+  volumeClaimTemplates:
+  - metadata:
+      name: kafka-storage
+    spec:
+      storageClassName: standard
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
