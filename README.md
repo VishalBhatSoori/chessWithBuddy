@@ -15,10 +15,14 @@
 - [Architecture](#architecture)
 - [Deployment](#deploying-the-backend-on-a-fresh-ec2-instance)
 
+<a id="preview"></a>
 ## 🎨 Preview
 
 ### Home Page - Create or Join a Game
 ![Home Page](frontend/src/assets/homepage.png)
+
+### Gameplay View
+![Gameplay View](frontend/src/assets/gameplay.png)
 
 ### Waiting for Opponent
 ![Waiting for Opponent](frontend/src/assets/waitingforoponent.png)
@@ -28,9 +32,6 @@
 
 ### In-Game Action
 ![In-Game Action](frontend/src/assets/playing.png)
-
-### Gameplay View
-![Gameplay View](frontend/src/assets/gameplay.png)
 
 ### Checkmate & Game Over
 ![Checkmate & Game Over](frontend/src/assets/checkmate.png)
@@ -44,6 +45,7 @@
 ### Message Passing in websockets
 ![Data Passing](frontend/src/assets/datapassing.png)
 
+<a id="architecture"></a>
 ## 🏗 Architecture 
 
 ![Architecture Diagram](frontend/src/assets/architecture.png)
@@ -63,6 +65,7 @@ The application follows a distributed, highly scalable architecture:
 * **Infrastructure:** Kubernetes, Docker, AWS (EC2), GitHub Actions for CI/CD
 * **Frontend:** React, TailwindCSS, Vite
 
+<a id="deploying-the-backend-on-a-fresh-ec2-instance"></a>
 ## 🚀 Deploying the Backend on a Fresh EC2 Instance
 This project relies on Kubernetes to orchestrate the backend services (WebSocket server, Kafka, message consumer, and MongoDB). 
 
