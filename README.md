@@ -1,5 +1,5 @@
-![alt text](frontend/src/assets/chess-com.svg)
-# ChessWithBuddy
+# ![alt text](frontend/src/assets/chess-com.svg)
+#ChessWithBuddy
 ### *A real-time multiplayer chess platform that lets you play chess with your friends, featuring low-latency gameplay and persisting the data without hindering the gameplay.*
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
