@@ -61,11 +61,59 @@ export const Game = () => {
         Connecting to server...
     </div>
 
-    return <div className="justify-center flex">
-        <div className="pt-8 max-w-5xl w-full">
-            <div className="grid grid-cols-6 gap-4 w-full">
-                <div className="col-span-4 w-full flex justify-center">
-                    <div className="flex flex-col items-center gap-4">
+    return (
+        <div
+            className="h-screen overflow-hidden bg-cover bg-center bg-no-repeat flex flex-col justify-center items-center py-2"
+            style={{ backgroundImage: "url('/chess-bg.avif')" }}
+        >
+            <div className="max-w-2xl w-full px-4 flex flex-col gap-4 items-center mt-[-4vh]">
+
+                {/* Status Container (Top) */}
+                <div className="w-full flex justify-center">
+                    <div className="bg-black/40 backdrop-blur-md rounded-2xl p-2 shadow-2xl w-full max-w-[552px] border border-white/10">
+                        {!started ? (
+                            <div className="flex flex-col gap-4 items-center p-4 justify-center text-center">
+                                <Button onClick={() => {
+                                    socket.send(JSON.stringify({
+                                        type: INIT_GAME
+                                    }));
+                                    setStarted(true);
+                                }}>
+                                    Play
+                                </Button>
+                                <p className="text-white text-xs italic font-bold">Winner takes it all !!!</p>
+                            </div>
+                        ) : !gameStarted ? (
+                            <div className="text-white text-center p-4 flex flex-col justify-center items-center">
+                                <p className="text-3xl mb-2">⏳</p>
+                                <p className="text-lg font-bold mb-2">Waiting for opponent...</p>
+                                <p className="text-xs text-gray-300">
+                                    Open another browser tab and click "Play"
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="text-white text-center p-4 flex flex-col gap-3">
+                                <div className="bg-slate-800/80 rounded-xl p-3 text-sm flex flex-col gap-2 border border-white/5">
+                                    <div className="flex justify-between items-center border-b border-white/10 pb-1">
+                                        <span className="text-gray-300">Your Color</span>
+                                        <span className="font-bold">{myColor?.toUpperCase()}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center pt-1">
+                                        <span className="text-gray-300">Current Turn</span>
+                                        <span className="font-bold">{chess.turn() === 'w' ? 'WHITE' : 'BLACK'}</span>
+                                    </div>
+                                </div>
+                                <div className="bg-green-600/90 rounded-xl p-2 shadow border border-green-500/30">
+                                    <p className="font-bold text-sm">🎮 Game On!</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Board Container (Bottom) */}
+                <div className="w-full flex justify-center">
+                    <div className="bg-black/40 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-2xl border border-white/10 flex flex-col items-center w-fit">
                         <ChessBoard
                             socket={socket}
                             board={board}
@@ -75,48 +123,8 @@ export const Game = () => {
                         />
                     </div>
                 </div>
-                <div className="col-span-2 bg-slate-900 w-full flex justify-center items-center">
-                    <div className="">
-                        {!started ? (
-                            <div className="flex flex-col gap-4 items-center">
-                                <Button onClick={() => {
-                                    socket.send(JSON.stringify({
-                                        type: INIT_GAME
-                                    }));
-                                    setStarted(true);
-                                }}>
-                                    Play
-                                </Button>
-                                <p className="text-white text-sm italic font-bold">Winner takes it all !!!</p>
-                            </div>
-                        ) : !gameStarted ? (
-                            <div className="text-white text-center px-4">
-                                <div className="bg-slate-800 rounded-lg p-6">
-                                    <p className="text-2xl mb-4">⏳</p>
-                                    <p className="text-xl font-bold mb-2">Waiting for opponent...</p>
-                                    <p className="text-sm text-gray-400">
-                                        Open this URL in another browser tab or share it with a friend!
-                                    </p>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="text-white text-center px-4">
-                                <div className="bg-green-800 rounded-lg p-6 mb-4">
-                                    <p className="text-xl font-bold">🎮 Game On!</p>
-                                </div>
-                                <div className="bg-slate-800 rounded-lg p-4 text-sm">
-                                    <p className="mb-2">
-                                        <strong>Your Color:</strong> {myColor?.toUpperCase()}
-                                    </p>
-                                    <p>
-                                        <strong>Turn:</strong> {chess.turn() === 'w' ? 'WHITE' : 'BLACK'}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
+
             </div>
         </div>
-    </div>
+    );
 }
