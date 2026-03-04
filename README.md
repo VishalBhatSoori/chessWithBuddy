@@ -1,5 +1,6 @@
-# ♟️ ChessWithBuddy
-### *A real-time multiplayer chess platform that lets you play chess with your friends, featuring low-latency gameplay and robust message queuing.*
+![alt text](/assets/chess-com.svg)
+# ChessWithBuddy
+### *A real-time multiplayer chess platform that lets you play chess with your friends, featuring low-latency gameplay and persisting the data without hindering the gameplay.*
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -19,39 +20,20 @@
 The application follows a distributed, highly scalable architecture:
 1. **Frontend**: A React web application that connects to the backend network via WebSockets for real-time multiplayer functionality.
 2. **Backend**: A Node.js server using WebSockets (`ws`) to manage game state with `chess.js`, handle matchmaking, and publish game moves and state changes to a Kafka topic.
-3. **Message Broker**: Apache Kafka is used to queue all incoming moves asynchronously, ensuring that bursts of gameplay activity never overwhelm the database.
+3. **Message Broker**: Apache Kafka is used to queue all incoming moves quickly without the delay of uploading the moves to mongodb atlas asynchronously, ensuring smooth real time game play.
 4. **DB Worker**: An independent Node.js worker service that continuously consumes messages from the Kafka topics and reliably persists the moves and game records into MongoDB.
 
 ## 🛠 Tech Stack
 
-* **Frontend:** React, TailwindCSS, Vite
 * **Backend:** Node.js, WebSockets (`ws`), `chess.js`
 * **Worker Service:** Node.js, KafkaJS, Mongoose
 * **Database:** MongoDB
 * **Message Broker:** Apache Kafka
 * **Infrastructure:** Kubernetes, Docker, AWS (EC2), GitHub Actions for CI/CD
+* **Frontend:** React, TailwindCSS, Vite
 
-## 🚀 Deploying the Backend
-This project relies on Kubernetes to orchestrate the backend services (WebSocket server, Kafka, message consumer, and MongoDB). Follow these steps to deploy the backend on your own infrastructure (e.g., Minikube, AWS EKS, or standard EC2 running k3s).
-
-### 1. Prerequisites
-Ensure you have the following installed on your machine:
-* `kubectl` (Kubernetes command-line tool)
-* Docker
-* A running Kubernetes cluster
-
-### 2. Configure Your Secrets
-Before deploying, you must provide your sensitive environment variables (such as your MongoDB URI). These should never be hardcoded into your `.yml` files. 
-
-Create a `.env` file or export your variables directly to your environment, then run the following command to create a Kubernetes secret called `backend-secrets` (used by both the `backend` and `db-worker`):
-
-```bash
-kubectl create secret generic backend-secrets \
-  --from-literal=MONGO_URI=your_mongodb_connection_string
-```
-**⚠️ Note:** You must manually substitute `your_mongodb_connection_string` with your actual database connection string. Do not commit these credentials to version control!
-
-### 3. Deploy on a Fresh EC2 Instance
+## 🚀 Deploying the Backend on a Fresh EC2 Instance
+This project relies on Kubernetes to orchestrate the backend services (WebSocket server, Kafka, message consumer, and MongoDB). 
 
 If you are setting this up on a fresh Ubuntu EC2 instance, follow these exact steps to install dependencies, initialize your cluster via `kind`, and deploy all necessary services.
 
@@ -83,9 +65,19 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main
 
 # Wait for the ingress controller to be ready chesk by using thi command
 kubectl get all -n ingress-nginx
+```
 
+**Step 4: Install Cert-Manager**
+Since the application uses a `ClusterIssuer` to handle TLS certificates automatically, you need to install `cert-manager` first before the application configuration:
 
-**Step 4: Deploy the Application Infrastructure**
+```bash
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.yaml
+
+# Wait for cert-manager to be ready
+kubectl get pods -n cert-manager
+```
+
+**Step 5: Deploy the Application Infrastructure**
 Now, you can sequentially deploy your actual application resources:
 
 ```bash
@@ -112,13 +104,15 @@ kubectl apply -f k8s/cluster-issuer.yml
 kubectl apply -f k8s/backend-ingress.yml
 ```
 
-### 4. Verify the Deployment
-Once all the configuration files are applied, verify that the pods are running correctly in the `statless` namespace:
+**Step 6: Verify the Deployment**
+Once all the configuration files are applied, verify that the pods are running correctly in the `chess-backend-stateless` namespace:
 
 ```bash
-kubectl get pods -n statless
-kubectl get services -n statless
-kubectl get ingress -n statless
+kubectl get all -n chess-backend-stateless
+kubectl get secrets -n chess-backend-stateless
+kubectl get all -n data
+kubectl get pvc -n data
+
 ```
 
-Your backend WebSocket service should now be live and ready to accept connections from the React frontend!
+Your backend WebSocket service should now be live and ready to accept connections from the React frontend in vercel!

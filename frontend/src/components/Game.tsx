@@ -43,7 +43,11 @@ export const Game = () => {
                     break;
 
                 case GAME_OVER:
-                    alert(`Game Over! Winner: ${message.payload.winner}`);
+                    if (message.payload.reason === "opponent_disconnected") {
+                        alert(`Game Over! Your opponent abandoned the game. You win!`);
+                    } else {
+                        alert(`Game Over! Winner: ${message.payload.winner}`);
+                    }
                     setGameStarted(false);
                     break;
             }
