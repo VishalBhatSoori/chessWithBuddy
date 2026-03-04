@@ -1,4 +1,4 @@
-![alt text](/assets/chess-com.svg)
+![alt text](/frontend/assets/chess-com.svg)
 # ChessWithBuddy
 ### *A real-time multiplayer chess platform that lets you play chess with your friends, featuring low-latency gameplay and persisting the data without hindering the gameplay.*
 
@@ -15,7 +15,7 @@
 
 ## 🏗 Architecture 
 
-![Architecture Diagram](/assets/architecture.png)
+![Architecture Diagram](/frontend/assets/architecture.png)
 
 The application follows a distributed, highly scalable architecture:
 1. **Frontend**: A React web application that connects to the backend network via WebSockets for real-time multiplayer functionality.
