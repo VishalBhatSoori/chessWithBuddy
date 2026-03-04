@@ -11,9 +11,9 @@
 [![Docker Support](https://img.shields.io/badge/docker-ready-blue?logo=docker)](#)
 
 ## Table of Contents
-- [Preview](#preview)
-- [Architecture](#architecture)
-- [Deployment](#deploying-the-backend-on-a-fresh-ec2-instance)
+- [🎨Preview](#preview)
+- [🏗 Architecture](#architecture)
+- [🚀 Deployment](#deploying-the-backend-on-a-fresh-ec2-instance)
 
 <a id="preview"></a>
 ## 🎨 Preview
