@@ -51,29 +51,74 @@ kubectl create secret generic backend-secrets \
 ```
 **⚠️ Note:** You must manually substitute `your_mongodb_connection_string` with your actual database connection string. Do not commit these credentials to version control!
 
-### 3. Deploy the Infrastructure
+### 3. Deploy on a Fresh EC2 Instance
 
-We have organized the Kubernetes definitions into the `k8s/` folder. Deploy the resources in this order:
+If you are setting this up on a fresh Ubuntu EC2 instance, follow these exact steps to install dependencies, initialize your cluster via `kind`, and deploy all necessary services.
+
+**Step 1: Install Dependencies (Docker, `kubectl`, `kind`)**
+```bash
+# Install Docker
+sudo apt-get update && sudo apt-get install -y docker.io
+sudo usermod -aG docker $USER && newgrp docker
+
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+# Install kind
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
+```
+
+**Step 2: Create the Kubernetes Cluster**
+Use the provided `config.yml` configuration file to create a `kind` cluster with Ingress support enabled:
+```bash
+kind create cluster --config k8s/config.yml
+```
+
+**Step 3: Setup the Ingress Controller**
+Install the NGINX Ingress controller so your cluster can accept incoming web traffic:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
+# Wait for the ingress controller to be ready chesk by using thi command
+kubectl get all -n ingress-nginx
+
+
+**Step 4: Deploy the Application Infrastructure**
+Now, you can sequentially deploy your actual application resources:
 
 ```bash
-# First, apply the namespace if one is defined
+# 1. Apply the namespace first
 kubectl apply -f k8s/namespace.yml
 
-# Check the namespace status
-kubectl get namespace
+# 2. Apply secrets and persistent volume concepts (assuming db-secrets.yml was provided)
+kubectl apply -f k8s/db-secrets.yml
 
-# Now, deploy the individual services and deployments
+# 3. Deploy Kafka (StatefulSet and Service)
+kubectl apply -f k8s/kafka-service.yml
+kubectl apply -f k8s/kafka-statefulset.yml
+
+# Wait for Kafka pods to be ready (optional but recommended)
+kubectl get pods -n statless
+
+# 4. Deploy the Backend and DB-Worker Services
+kubectl apply -f k8s/backend-service.yml
 kubectl apply -f k8s/backend-deployment.yml
-# Include other components like Kafka and your DB worker once defined...
-# e.g., kubectl apply -f k8s/kafka-statefulset.yml
+kubectl apply -f k8s/db-worker-deployment.yml
+
+# 5. Set up networking and SSL (Ingress and ClusterIssuer)
+kubectl apply -f k8s/cluster-issuer.yml
+kubectl apply -f k8s/backend-ingress.yml
 ```
 
 ### 4. Verify the Deployment
-Once all the configuration files are applied, verify that the pods are running correctly:
+Once all the configuration files are applied, verify that the pods are running correctly in the `statless` namespace:
 
 ```bash
-kubectl get pods
-kubectl get services
+kubectl get pods -n statless
+kubectl get services -n statless
+kubectl get ingress -n statless
 ```
 
 Your backend WebSocket service should now be live and ready to accept connections from the React frontend!
