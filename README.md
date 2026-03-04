@@ -1,4 +1,6 @@
-#     ![alt text](frontend/src/assets/chess-com.png)
+<div align="center">
+  <img src="frontend/src/assets/chess-com.png" alt="chess pawn" />
+</div>
 # ChessWithBuddy
 ### *A real-time multiplayer chess platform that lets you play chess with your friends, featuring low-latency gameplay and persisting the data without hindering the gameplay.*
 
