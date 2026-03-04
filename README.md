@@ -1,4 +1,4 @@
-## ![alt text](frontend/src/assets/chess-com.svg)
+# ![alt text](frontend/src/assets/chess-com.png)
 # ChessWithBuddy
 ### *A real-time multiplayer chess platform that lets you play chess with your friends, featuring low-latency gameplay and persisting the data without hindering the gameplay.*
 
