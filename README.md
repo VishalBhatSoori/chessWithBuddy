@@ -1,6 +1,7 @@
 <div align="center">
-  <img src="frontend/src/assets/chess-com.png" alt="chess pawn" />
-</div>
+  <img src="frontend/src/assets/chess-com.png" alt="chess pawn" height="150" />
+</div> 
+
 # ChessWithBuddy
 ### *A real-time multiplayer chess platform that lets you play chess with your friends, featuring low-latency gameplay and persisting the data without hindering the gameplay.*
 
@@ -9,11 +10,39 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](#)
 [![Docker Support](https://img.shields.io/badge/docker-ready-blue?logo=docker)](#)
 
+## Table of Contents
+- [Preview](#preview)
+- [Architecture](#architecture)
+- [Deployment](#deploying-the-backend-on-a-fresh-ec2-instance)
+
 ## 🎨 Preview
 
-! Home Page - Create or Join a Game![alt text](/assets/preview-home.png)
-! In-Game Chess Board![alt text](/assets/preview-game.png)
-! Checkmate & Game Over![alt text](/assets/preview-gameover.png)
+### Home Page - Create or Join a Game
+![Home Page](frontend/src/assets/homepage.png)
+
+### Waiting for Opponent
+![Waiting for Opponent](frontend/src/assets/waitingforoponent.png)
+
+### Game Started
+![Game Started](frontend/src/assets/gameon.png)
+
+### In-Game Action
+![In-Game Action](frontend/src/assets/playing.png)
+
+### Gameplay View
+![Gameplay View](frontend/src/assets/gameplay.png)
+
+### Checkmate & Game Over
+![Checkmate & Game Over](frontend/src/assets/checkmate.png)
+
+### Opponent Abandoned Game
+![Opponent Abandoned Game](frontend/src/assets/abandon.png)
+
+### WebSocket Connection Info
+![WebSocket Connection](frontend/src/assets/socket.png)
+
+### Message Passing in websockets
+![Data Passing](frontend/src/assets/datapassing.png)
 
 ## 🏗 Architecture 
 
@@ -116,5 +145,7 @@ kubectl get all -n data
 kubectl get pvc -n data
 
 ```
+
+![kubernetes setup](frontend/src/assets/kubernetes.jpeg)
 
 Your backend WebSocket service should now be live and ready to accept connections from the React frontend in vercel!
