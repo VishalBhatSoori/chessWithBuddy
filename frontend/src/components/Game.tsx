@@ -88,7 +88,7 @@ export const Game = () => {
                                 <p className="text-3xl mb-2">⏳</p>
                                 <p className="text-lg font-bold mb-2">Waiting for opponent...</p>
                                 <p className="text-xs text-gray-300">
-                                    Open another browser tab and click "Play"
+                                    Open the same link in another browser tab and click "Play" or Share the link with a Friend
                                 </p>
                             </div>
                         ) : (
