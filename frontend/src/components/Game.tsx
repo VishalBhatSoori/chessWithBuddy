@@ -68,10 +68,10 @@ export const Game = () => {
 
     return (
         <div
-            className="h-screen overflow-hidden bg-cover bg-center bg-no-repeat flex flex-col justify-center items-center py-2"
+            className="min-h-screen overflow-y-auto bg-cover bg-center bg-no-repeat flex flex-col justify-center items-center py-4"
             style={{ backgroundImage: "url('/chess-bg.avif')" }}
         >
-            <div className="max-w-2xl w-full px-4 flex flex-col gap-4 items-center mt-[-4vh]">
+            <div className="max-w-2xl w-full px-4 flex flex-col gap-4 items-center sm:mt-[-4vh]">
 
                 {/* Status Container (Top) */}
                 <div className="w-full flex justify-center">

@@ -66,17 +66,17 @@ export const ChessBoard = ({
                     return <div 
                         onClick={() => handleSquareClick(squareRepresentation, square)}
                         key={j} 
-                        className={`w-16 h-16 cursor-pointer transition-all
+                        className={`w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16 cursor-pointer transition-all
                             ${isSelected ? 'bg-yellow-400 ring-4 ring-yellow-600' : 
                               isDarkSquare ? 'bg-slate-600 hover:bg-slate-500' : 
                               'bg-green-400 hover:bg-green-300'}
                         `}
                     >
                         <div className="w-full justify-center flex h-full">
-                            <div className="h-full justify-center flex flex-col">
+                            <div className="h-full justify-center flex flex-col items-center">
                                 {square ? (
                                     <img 
-                                        className="w-12 h-12" 
+                                        className="w-[80%] h-[80%] object-contain" 
                                         src={`/${square?.color === "b" ? square?.type : `${square?.type?.toUpperCase()} copy`}.png`} 
                                         alt={`${square.color} ${square.type}`}
                                     />

@@ -7,16 +7,27 @@ import { GameModel } from './models/Game.js';
 dotenv.config();
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/chess';
-const kafkaBrokers = [process.env.KAFKA_BROKER || 'localhost:9092'];
-
 console.log('Connecting to MongoDB...');
 await mongoose.connect(mongoUri);
 console.log('Connected to MongoDB');
 
-const kafka = new Kafka({
+const kafkaConfig: any = {
     clientId: 'db-worker',
-    brokers: kafkaBrokers
-});
+    brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
+    ssl: process.env.KAFKA_USERNAME ? {
+        rejectUnauthorized: false,
+    } : false,
+};
+
+if (process.env.KAFKA_USERNAME) {
+    kafkaConfig.sasl = {
+        mechanism: 'plain',
+        username: process.env.KAFKA_USERNAME,
+        password: process.env.KAFKA_PASSWORD || ''
+    };
+}
+
+const kafka = new Kafka(kafkaConfig);
 
 const consumer = kafka.consumer({ groupId: 'chess-db-worker-group' });
 
